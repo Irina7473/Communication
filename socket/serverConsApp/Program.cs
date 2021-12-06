@@ -13,6 +13,7 @@ namespace ServerConsApp
         static void Main()
         {
             NetworkParty.Notify += Notify;
+            Notify += Output;
             string message;
             Notify?.Invoke("Start...");
             var ip = "127.0.0.1";
@@ -24,9 +25,14 @@ namespace ServerConsApp
             {
                 var connect = server.partySocket.Accept();
                 Notify?.Invoke("Accept...");
-                message = server.Receive(connect);                
-                server.Send(connect, $"Принято Ваше сообщение: {message}");
+                message = server.PartyReceive(connect);                
+                server.PartySend(connect, $"Принято Ваше сообщение: {message}");
             }
+        }
+
+        static void Output (string message)
+        {
+            Console.WriteLine(message);
         }
     }
 }

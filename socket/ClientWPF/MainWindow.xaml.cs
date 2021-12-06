@@ -27,7 +27,7 @@ namespace ClientWPF
         Client client;
         IPAddress ip;
         int port;
-        Socket connect;
+        //Socket connect;
         public MainWindow()
         {
             InitializeComponent();
@@ -50,16 +50,13 @@ namespace ClientWPF
             { MessageBox.Show("Неверный формат порта"); }
             client = new Client(ip, port);
             Button_send.IsEnabled = true;
-            while (true)
-            {
-                connect = client.chatSocket.Accept();
-                TextBox_incoming.Text = client.Receive(connect);
-            }
+            TextBox_incoming.Text = client.PartyReceive(client.partySocket);
+            
         }
 
         private void Button_send_Click(object sender, RoutedEventArgs e)
         {
-            client.Send(connect, TextBox_outgoing.Text);
+            client.PartySend(client.partySocket, TextBox_outgoing.Text);
         }
         private void human_Checked(object sender, RoutedEventArgs e)
         {

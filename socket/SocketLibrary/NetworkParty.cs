@@ -13,7 +13,7 @@ namespace SocketLibrary
         public int Port { get; set; }
         public Socket partySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         
-        public string Receive(Socket connect)
+        public string PartyReceive(Socket connect)
         {
             var buffer = new byte[256];
             var data = new List<byte>();
@@ -25,19 +25,19 @@ namespace SocketLibrary
 
             var t = data.ToArray();
             var message = Encoding.Unicode.GetString(t, 0, t.Length);
-            Close(connect, message);
+            PartyClose(connect, message);
             Notify?.Invoke("Received");
             return message;
         }
 
-        public void Send(Socket connect, string message)
+        public void PartySend(Socket connect, string message)
         {
             connect.Send(Encoding.Unicode.GetBytes(message));
             Notify?.Invoke("Send...");
-            Close(connect, message);
+            PartyClose(connect, message);
         }
 
-        private void Close(Socket connect, string message)
+        private void PartyClose(Socket connect, string message)
         {
             if (message == "bye" || message == "Bye")
             {
