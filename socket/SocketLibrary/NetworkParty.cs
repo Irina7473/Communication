@@ -8,43 +8,52 @@ namespace SocketLibrary
 {
     public class NetworkParty
     {
-        public static event Action<string> Notify;
-        public IPAddress IP { get; set; }
-        public int Port { get; set; }
+        public static event Action<string> Notify;        
         public Socket partySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        
+
+        public void Сonnection(IPAddress ip, int port) { }
+
         public string PartyReceive(Socket connect)
         {
-            var buffer = new byte[256];
-            var data = new List<byte>();
-            do
+            if (connect.Connected)
             {
-                connect.Receive(buffer);
-                data.AddRange(buffer);
-            } while (connect.Available > 0);
+                var buffer = new byte[256];
+                var data = new List<byte>();
+                do
+                {
+                    connect.Receive(buffer);
+                    data.AddRange(buffer);
+                } while (connect.Available > 0);
 
-            var t = data.ToArray();
-            var message = Encoding.Unicode.GetString(t, 0, t.Length);
-            PartyClose(connect, message);
-            Notify?.Invoke("Received");
-            return message;
+                var t = data.ToArray();
+                var message = Encoding.Unicode.GetString(t, 0, t.Length);
+                if (message == "bye" || message == "Bye") PartyClose(connect);
+                Notify?.Invoke("Received");
+                return message;
+            }
+            else
+            {
+                Notify?.Invoke("No connection");
+                return "Отсутствует соединение";
+            }
         }
 
         public void PartySend(Socket connect, string message)
         {
-            connect.Send(Encoding.Unicode.GetBytes(message));
-            Notify?.Invoke("Send...");
-            PartyClose(connect, message);
+            if (connect.Connected)
+            {
+                connect.Send(Encoding.Unicode.GetBytes(message));
+                Notify?.Invoke("Send...");
+                if (message == "bye" || message == "Bye") PartyClose(connect);
+            }
+            else Notify?.Invoke("No connection");
         }
 
-        private void PartyClose(Socket connect, string message)
+        private void PartyClose(Socket connect)
         {
-            if (message == "bye" || message == "Bye")
-            {
-                Notify?.Invoke("Close");
-                connect.Shutdown(SocketShutdown.Both);
-                connect.Close();
-            }
+           Notify?.Invoke("Close");
+           connect.Shutdown(SocketShutdown.Both);
+           connect.Close();
         }
     }
 }

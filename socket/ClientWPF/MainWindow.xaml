@@ -31,10 +31,12 @@
             <Label HorizontalAlignment="Center">Ваше сообщение</Label>
             <TextBox x:Name="TextBox_outgoing" Width="500" Height="30" Margin="10"></TextBox>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="Button_send" Content="передать сообщение" Click="Button_send_Click"
-                        Width="200" Height="30" Margin="10" ></Button>
-            <Button x:Name="Button_clear" Content="очистить сообщение" Click="Button_clear_Click"
-                        Width="200" Height="30" Margin="10" ></Button>
+                <Button x:Name="Button_send" Content="передать сообщение" Click="Button_send_Click"
+                        Width="150" Height="30" Margin="10" ></Button>
+                <Button x:Name="Button_clear" Content="очистить сообщение" Click="Button_clear_Click"
+                        Width="150" Height="30" Margin="10" ></Button>
+                <Button x:Name="Button_clearChat" Content="очистить чат" Click="Button_clearChat_Click"
+                        Width="150" Height="30" Margin="10" ></Button>
             </StackPanel>
         </StackPanel>
     </Grid>

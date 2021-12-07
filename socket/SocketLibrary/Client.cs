@@ -9,12 +9,10 @@ namespace SocketLibrary
     public class Client: NetworkParty
     {
         public static new event Action<string> Notify;
-        
-        public Client(IPAddress ip, int port)
-        {
-            IP = ip;
-            Port = port;
-            partySocket.Connect(new IPEndPoint(IP, Port));
+        public Client() { }
+        public new void Сonnection(IPAddress ip, int port)
+        {           
+            partySocket.Connect(new IPEndPoint(ip, port));
             Notify?.Invoke("Connect to Server");
         }       
     }

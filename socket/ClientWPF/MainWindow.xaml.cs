@@ -27,11 +27,11 @@ namespace ClientWPF
         Client client;
         IPAddress ip;
         int port;
-        //Socket connect;
         public MainWindow()
         {
             InitializeComponent();
             Button_send.IsEnabled = false;
+            client = new Client();
         }
 
         private void Button_connect_Click(object sender, RoutedEventArgs e)
@@ -48,22 +48,38 @@ namespace ClientWPF
             }
             catch
             { MessageBox.Show("Неверный формат порта"); }
-            client = new Client(ip, port);
+            client.Сonnection(ip, port);
+            Button_connect.IsEnabled = false;
             Button_send.IsEnabled = true;
             var message = client.PartyReceive(client.partySocket);
-            AppendFormattedText("server", message);   
+            AppendFormattedText("server", message);
         }
 
         private void Button_send_Click(object sender, RoutedEventArgs e)
         {
-            client.PartySend(client.partySocket, TextBox_outgoing.Text);
-            AppendFormattedText("client", TextBox_outgoing.Text);
-            TextBox_outgoing.Text = "";
+            if (client.partySocket.Connected)
+            {
+                client.PartySend(client.partySocket, TextBox_outgoing.Text);
+                AppendFormattedText("client", TextBox_outgoing.Text);
+                TextBox_outgoing.Text = "";
+                var message = client.PartyReceive(client.partySocket);
+                AppendFormattedText("server", message);
+            }
+            else
+            {
+                MessageBox.Show("Соединение с сервером не установлено");
+                Button_connect.IsEnabled = true;
+            }
         }
 
         private void Button_clear_Click(object sender, RoutedEventArgs e)
         {
             TextBox_outgoing.Text = "";
+        }
+
+        private void Button_clearChat_Click(object sender, RoutedEventArgs e)
+        {
+            RichTextBox_incoming.Document.Blocks.Clear();
         }
 
         private void human_Checked(object sender, RoutedEventArgs e)
@@ -88,9 +104,8 @@ namespace ClientWPF
             if (type == "client")
             {
                 rangeOfWord.Text = "\t" + text + "\r";
-                rangeOfWord.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Green); }
+                rangeOfWord.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Green); 
+            }
         }
-
-       
     }
 }

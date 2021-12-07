@@ -18,17 +18,29 @@ namespace ServerConsApp
             Notify?.Invoke("Start...");
             var ip = "127.0.0.1";
             var port = 8005;
-            var server = new Server(IPAddress.Parse(ip), port);
+            var server = new Server();
+            server.Mode = false;
+            server.Сonnection(IPAddress.Parse(ip), port);
             Notify?.Invoke("Listen...");
 
             while (true)
             {
                 var connect = server.partySocket.Accept();
                 Notify?.Invoke("Accept...");
-                server.PartySend(connect, "Listen...");
-                message = server.PartyReceive(connect);
-                Output(message);
-                server.PartySend(connect, $"Принято Ваше сообщение: {message}");
+                server.PartySend(connect, "Соединение с сервером установлено");
+                do
+                {
+                    message = server.PartyReceive(connect);
+                    Output(message);
+                    if (server.Mode == true)
+                    {
+                        message = Console.ReadLine();
+                        server.PartySend(connect, message);
+                    }
+                    else server.PartySend(connect, $"Принято сообщение: {message}");
+                    Notify?.Invoke("Send...");
+                }
+                while (connect.Connected);
             }
         }
 
