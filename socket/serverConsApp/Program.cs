@@ -25,7 +25,9 @@ namespace ServerConsApp
             {
                 var connect = server.partySocket.Accept();
                 Notify?.Invoke("Accept...");
-                message = server.PartyReceive(connect);                
+                server.PartySend(connect, "Listen...");
+                message = server.PartyReceive(connect);
+                Output(message);
                 server.PartySend(connect, $"Принято Ваше сообщение: {message}");
             }
         }
