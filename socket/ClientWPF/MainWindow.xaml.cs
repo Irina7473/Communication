@@ -50,14 +50,22 @@ namespace ClientWPF
             { MessageBox.Show("Неверный формат порта"); }
             client = new Client(ip, port);
             Button_send.IsEnabled = true;
-            TextBox_incoming.Text = client.PartyReceive(client.partySocket);
-            
+            var message = client.PartyReceive(client.partySocket);
+            AppendFormattedText("server", message);   
         }
 
         private void Button_send_Click(object sender, RoutedEventArgs e)
         {
             client.PartySend(client.partySocket, TextBox_outgoing.Text);
+            AppendFormattedText("client", TextBox_outgoing.Text);
+            TextBox_outgoing.Text = "";
         }
+
+        private void Button_clear_Click(object sender, RoutedEventArgs e)
+        {
+            TextBox_outgoing.Text = "";
+        }
+
         private void human_Checked(object sender, RoutedEventArgs e)
         {
 
@@ -67,5 +75,22 @@ namespace ClientWPF
         {
 
         }
+
+        private void AppendFormattedText(string type, string text)
+        {
+            TextRange rangeOfWord = new TextRange(RichTextBox_incoming.Document.ContentEnd, RichTextBox_incoming.Document.ContentEnd);
+            rangeOfWord.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Regular);
+            if (type == "server")
+            {
+                rangeOfWord.Text = text + "\r";
+                rangeOfWord.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
+            }
+            if (type == "client")
+            {
+                rangeOfWord.Text = "\t" + text + "\r";
+                rangeOfWord.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Green); }
+        }
+
+       
     }
 }
