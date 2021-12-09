@@ -28,7 +28,7 @@ namespace SocketLibrary
                 var t = data.ToArray();
                 var message = Encoding.Unicode.GetString(t, 0, t.Length);
                 if (message == "bye" || message == "Bye") PartyClose(connect);
-                Notify?.Invoke("Received");
+                //Notify?.Invoke("Received");
                 return message;
             }
             else
@@ -43,13 +43,13 @@ namespace SocketLibrary
             if (connect.Connected)
             {
                 connect.Send(Encoding.Unicode.GetBytes(message));
-                Notify?.Invoke("Send...");
+                //Notify?.Invoke("Send...");
                 if (message == "bye" || message == "Bye") PartyClose(connect);
             }
             else Notify?.Invoke("No connection");
         }
 
-        private void PartyClose(Socket connect)
+        public void PartyClose(Socket connect)
         {
            Notify?.Invoke("Close");
            connect.Shutdown(SocketShutdown.Both);

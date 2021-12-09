@@ -27,15 +27,20 @@ namespace ClientWPF
         Client client;
         IPAddress ip;
         int port;
+        string message;
         public MainWindow()
         {
             InitializeComponent();
             Button_send.IsEnabled = false;
             client = new Client();
+            NetworkParty.Notify+= Show;
+            Client.Notify += Show;
+            Server.Notify += Show;
         }
 
         private void Button_connect_Click(object sender, RoutedEventArgs e)
         {
+            //client = new Client();
             try
             {
                 ip = IPAddress.Parse(TextBox_IPaddress.Text);
@@ -59,10 +64,11 @@ namespace ClientWPF
         {
             if (client.partySocket.Connected)
             {
-                client.PartySend(client.partySocket, TextBox_outgoing.Text);
-                AppendFormattedText("client", TextBox_outgoing.Text);
+                message = TextBox_outgoing.Text;
+                AppendFormattedText("client", message);
                 TextBox_outgoing.Text = "";
-                var message = client.PartyReceive(client.partySocket);
+                client.PartySend(client.partySocket, message);
+                message = client.PartyReceive(client.partySocket);
                 AppendFormattedText("server", message);
             }
             else
@@ -105,6 +111,16 @@ namespace ClientWPF
             {
                 rangeOfWord.Text = "\t" + text + "\r";
                 rangeOfWord.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Green); 
+            }
+        }
+
+        private void Show(string message)
+        {
+            TextBlock_sbar.Text=message;
+            if (message == "Close" || message == "No connection")
+            {
+                Button_connect.IsEnabled = true;
+                message = "";
             }
         }
     }
