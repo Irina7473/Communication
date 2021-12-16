@@ -21,8 +21,16 @@ namespace SocketLibrary
                 var data = new List<byte>();
                 do
                 {
-                    connect.Receive(buffer);
-                    data.AddRange(buffer);
+                    try
+                    {
+                        connect.Receive(buffer);
+                        data.AddRange(buffer);
+                    }
+                    catch (Exception exc)
+                    {
+                        Notify?.Invoke (exc.Message);
+                        break;
+                    }
                 } while (connect.Available > 0);
 
                 var t = data.ToArray();

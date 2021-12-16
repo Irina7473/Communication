@@ -35,20 +35,26 @@ namespace ServerConsApp
                     if (message == "bye" || message == "Bye")
                     {
                         server.PartyClose(connect);
-                        return;
-                    }
-                    if (server.Mode == true)
-                    {
-                        message = Console.ReadLine();
-                        server.PartySend(connect, message);
+                        Notify?.Invoke("Соединение разорвано.");
+                        Output("Соединение разорвано.");
+                        //return;
                     }
                     else
                     {
-                        server.PartySend(connect, $"Принято сообщение: {message}");
+                        if (server.Mode == true)
+                        {
+                            message = Console.ReadLine();
+                            server.PartySend(connect, message);
+                        }
+                        else
+                        {
+                            server.PartySend(connect, $"Принято сообщение: {message}");
+                        }
+                        Notify?.Invoke("Send...");
                     }
-                    Notify?.Invoke("Send...");
                 }
                 while (connect.Connected);
+                server.PartyClose(connect);
             }
         }
 

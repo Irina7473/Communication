@@ -32,14 +32,15 @@ namespace ClientWPF
         {
             InitializeComponent();
             Button_send.IsEnabled = false;
-            client = new Client();
+            //client = new Client();
             NetworkParty.Notify+= Show;
             Client.Notify += Show;
             Server.Notify += Show;
         }
 
         private void Button_connect_Click(object sender, RoutedEventArgs e)
-        {            
+        {
+            client = new Client();
             try
             {
                 ip = IPAddress.Parse(TextBox_IPaddress.Text);
